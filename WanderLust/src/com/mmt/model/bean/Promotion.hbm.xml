@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Mar 6, 2017 8:14:19 PM by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.mmt.model.bean.Promotion" table="PROMOTION">
+        <id name="promotionId" type="java.lang.String">
+            <column name="PROMOTIONID" />
+            <generator class="assigned" />
+        </id>
+        <property name="promotionName" type="java.lang.String">
+            <column name="PROMOTIONNAME" />
+        </property>
+        <property name="promotionDiscount" type="double">
+            <column name="PROMOTIONDISCOUNT" />
+        </property>
+        <property name="promotionExpiryDate" type="java.lang.String">
+            <column name="PROMOTIONEXPIRYDATE" />
+        </property>
+        <property name="promotionMinRequiredAmount" type="double">
+            <column name="PROMOTIONMINREQUIREDAMOUNT" />
+        </property>
+        <property name="promotionType" type="java.lang.String">
+            <column name="PROMOTIONTYPE" />
+        </property>
+    </class>
+</hibernate-mapping>

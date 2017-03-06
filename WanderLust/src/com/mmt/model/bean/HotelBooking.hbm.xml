@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Mar 6, 2017 8:14:19 PM by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.mmt.model.bean.HotelBooking" table="HOTELBOOKING">
+        <id name="hotelBookingId" type="java.lang.String">
+            <column name="HOTELBOOKINGID" />
+            <generator class="assigned" />
+        </id>
+        <property name="hotelId" type="java.lang.String">
+            <column name="HOTELID" />
+        </property>
+        <property name="userId" type="java.lang.String">
+            <column name="USERID" />
+        </property>
+        <property name="roomNo" type="int">
+            <column name="ROOMNO" />
+        </property>
+        <property name="hotelCheckInDate" type="java.util.Date">
+            <column name="HOTELCHECKINDATE" />
+        </property>
+        <property name="hotelCheckOutDate" type="java.util.Date">
+            <column name="HOTELCHECKOUTDATE" />
+        </property>
+        <property name="stayDuration" type="int">
+            <column name="STAYDURATION" />
+        </property>
+    </class>
+</hibernate-mapping>

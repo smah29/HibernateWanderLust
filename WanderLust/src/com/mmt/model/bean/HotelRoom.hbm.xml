@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Mar 6, 2017 8:14:19 PM by Hibernate Tools 3.5.0.Final -->
+<hibernate-mapping>
+    <class name="com.mmt.model.bean.HotelRoom" table="HOTELROOM">
+        <id name="hotelId" type="java.lang.String">
+            <column name="HOTELID" />
+            <generator class="assigned" />
+        </id>
+        <property name="hotelRoomNo" type="int">
+            <column name="HOTELROOMNO" />
+        </property>
+        <property name="hotelRoomType" type="java.lang.String">
+            <column name="HOTELROOMTYPE" />
+        </property>
+        <property name="hotelRoomPrice" type="double">
+            <column name="HOTELROOMPRICE" />
+        </property>
+        <property name="hotelRoomStatus" type="java.lang.String">
+            <column name="HOTELROOMSTATUS" />
+        </property>
+    </class>
+</hibernate-mapping>
