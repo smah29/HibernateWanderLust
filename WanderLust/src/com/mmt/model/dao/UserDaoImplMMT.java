@@ -2,107 +2,126 @@ package com.mmt.model.dao;
 
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 import com.mmt.model.bean.User;
 
+
 public class UserDaoImplMMT implements UserDaoMMT {
-	Connection con;
+	Configuration cfg=new Configuration();
 	@Override
 	public int insert(User user) throws SQLException, ClassNotFoundException, IOException {
-		int row;
-		con=DbConnection.dbConnection();
-		PreparedStatement pst = con.prepareStatement("insert into mmt_user values(?,?,?,?,?,?)");
-		pst.setString(1, user.getUserId());
-		pst.setString(2,user.getUserName());
-		pst.setLong(3,user.getUserPhoneNo());
-		pst.setString(4,user.getUserEmailId());
-		pst.setString(5,user.getUserAddress());
-		pst.setString(6, user.getUserPassword());
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
 		
-		
-		row=pst.executeUpdate();
-		
-		con.close();
-		return row;
-		
+		try{
+			tx=session.beginTransaction();
+			session.save(user);
+			tx.commit();
+			System.out.println("Record Inserted");
+			
+			session.close();
+			return 1;
+			}
+		catch(Exception ex){
+			tx.rollback();
+		}
+		session.close();
+		return 0;
 	}
 
 	@Override
 	public User search(String uid) throws SQLException, ClassNotFoundException, IOException {
 		
-		User user=new User();
-		ResultSet rs;
-		con=DbConnection.dbConnection();
-		PreparedStatement pst=con.prepareStatement("select * from mmt_user where USERID=?");
-		pst.setString(1, uid);
-		rs=pst.executeQuery();
-		if(rs.next()){
-			user.setUserId((rs.getString("USERID")));
-			user.setUserName((rs.getString("USERNAME")));
-			user.setUserPhoneNo(rs.getLong("USERPHONENO"));
-			user.setUserEmailId(rs.getString("USEREMAILID"));
-			user.setUserAddress(rs.getString("USERADDRESS"));
-			user.setUserPassword(rs.getString("userpassword"));	
-			return user;
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
+		User user=null;
+		try{
+			tx=session.beginTransaction();
+			user=(User)session.get(User.class,uid);
+			tx.commit();
 		}
-
-		con.close();
-		return null;
+	catch(Exception ex){
+		tx.rollback();
+	}
+	finally{
+		session.close();
+		}
+		return user;
 	}
 
 	@Override
 	public int delete(String uid) throws SQLException, ClassNotFoundException, IOException {
-		int row;
-		 con=DbConnection.dbConnection();
-		PreparedStatement pst=con.prepareStatement("delete from mmt_user where USERID=?");
-		pst.setString(1, uid);
-		row=pst.executeUpdate();
-		con.close();
-		return row;
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
+		try{
+			tx=session.beginTransaction();
+			User user=(User)session.get(User.class,uid);
+			session.delete(user);
+			tx.commit();
+			session.close();
+			return 1;
 	}
+	catch(Exception ex){
+		tx.rollback();
+		session.close();
+	}
+		return 0;
+	}
+	
 
 	@Override
 	public int update(String uid, User user) throws SQLException, ClassNotFoundException, IOException {
-		int row;
-		 con=DbConnection.dbConnection();
-		PreparedStatement pst=con.prepareStatement("update mmt_user set USERNAME=?,  USERPHONENO=?, USEREMAILID=?, USERADDRESS=?,USERPASSWORD=? where userid=?");
-		pst.setString(1, user.getUserName());
-		pst.setLong(2, user.getUserPhoneNo());
-		pst.setString(3, user.getUserEmailId());
-		pst.setString(4, user.getUserAddress());
-		pst.setString(5, user.getUserPassword());
-		pst.setString(6, uid);
-		row=pst.executeUpdate();
-		return row;
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
+		try{
+			tx=session.beginTransaction();
+			User oldUser=(User)session.get(User.class,uid);
+			session.update(user);
+			tx.commit();
+			session.close();
+			return 1;
+	}
+	catch(Exception ex){
+		tx.rollback();
+		session.close();
+	}
+		return 0;
 	}
 
 	@Override
 	public List<User> displayAll() throws SQLException, ClassNotFoundException, IOException {
-		User user=new User();
-		List<User> list=new ArrayList<User>();
-		ResultSet rs;
-		con=DbConnection.dbConnection();
-		PreparedStatement pst=con.prepareStatement("select * from mmt_user");
-		rs=pst.executeQuery();
-		while(rs.next()){
-			user.setUserId(rs.getString("USERID"));
-			user.setUserName((rs.getString("USERNAME")));
-			user.setUserPhoneNo((rs.getLong("USERPHONENO")));
-			user.setUserEmailId((rs.getString("USEREMAILID")));
-			user.setUserAddress((rs.getString("USERADDRESS")));
-			user.setUserPassword((rs.getString("USERPASSWORD")));
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
+		List<User> userList=null;
+		try{
+			tx=session.beginTransaction();
+			Query query=session.createQuery("from User");
+			userList=query.list();
+		}
+		catch(Exception ex){
+			tx.rollback();
+		}
+		finally{
+			session.close();
 			
-			list.add(user);
 		}
 		
-		con.close();
-		
-		return list;
+		return userList;
 	}
 }

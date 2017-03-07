@@ -8,40 +8,44 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
 import com.mmt.model.bean.FlightBooking;
+import com.mmt.model.bean.HotelBooking;
 
 public class FlightBookingImpMMT implements FlightBookingDaoMMT {
-	Connection con;
+	Configuration cfg=new Configuration();
 	//display the details of flightbooking
 	@Override
 	public ArrayList<FlightBooking> displayFlightBooking() throws ClassNotFoundException, SQLException, IOException {
 		{
+			
+			cfg.configure("hibernate.cfg.xml");
+			SessionFactory factory=cfg.buildSessionFactory();
+			Session session=factory.openSession();
+			Transaction tx=null;
 			ArrayList<FlightBooking> FB = new ArrayList<FlightBooking>();
-			FlightBooking fb = new FlightBooking();
-			con = DbConnection.dbConnection();
-			// Query
-			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("select * from FLIGHTBOOKING");
-
-			while (rs.next()) {
-				fb.setFlightBookingId(rs.getString("flightBookingId"));
-				fb.setFlightId(rs.getString("flightId"));
-				fb.setUserId(rs.getString("userId"));
-				fb.setFlightBookingId(rs.getString("flightBookingDate"));
-
-				String status = "false";
-				if (rs.getString("flag").equals("true")){
-					status = "true";
-
-					fb.setFlag(true);
-				}
-		
+			try{
+				tx=session.beginTransaction();
+				Query query=session.createQuery("from FlightBooking");
+				List<FlightBooking> flightBookingList=query.list();
 				
-
+				for(FlightBooking flightBooking:flightBookingList){
+					FB.add(flightBooking);
+				}
 			}
-			con.close();
-
+			catch(Exception ex){
+				tx.rollback();
+			}
+			finally{
+				session.close();
+		}
 			return FB;
 		}
 	}
@@ -50,75 +54,78 @@ public class FlightBookingImpMMT implements FlightBookingDaoMMT {
 	public ArrayList<FlightBooking> searchFlightBooking(String userId)
 			throws ClassNotFoundException, SQLException, IOException {
 
-		FlightBooking fb =null;
-		ArrayList<FlightBooking> fList = new ArrayList<FlightBooking>();
-		ResultSet rs;
-		con = DbConnection.dbConnection();
-		// Query
-		PreparedStatement pst = con.prepareStatement("select * from FLIGHTBOOKING where userId=?");
-		pst.setString(1, userId);
-		rs = pst.executeQuery();
-		while (rs.next()) {
-			fb= new FlightBooking();
-			fb.setFlightBookingId(rs.getString("flightBookingId"));
-			fb.setFlightId(rs.getString("flightId"));
-			fb.setUserId(rs.getString("userId"));
-			Date d = rs.getDate(4);
-		//	java.sql.Date sqlDate1 = new java.sql.Date(d.getTime());
-			fb.setFlightBookingDate(d);
-
-			String status = "false";
-			if (rs.getString("flag").equalsIgnoreCase("true")) {
-				status = "true";
-
-				fb.setFlag(true);
-			}
-
-			fList.add(fb);
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
+		
+		ArrayList<FlightBooking> fb =new ArrayList<FlightBooking>();
+		try{
+			tx=session.beginTransaction();
+		
+		Query query=session.createQuery("from FlightBooking where userId=:id");
+		query.setString("id", userId);
+		List<FlightBooking> flightBookingList=query.list();
+		
+		for(FlightBooking flightBooking:flightBookingList){
+			fb.add(flightBooking);
 		}
-		con.close();
-
-		return fList;
+		tx.commit();
+	
+	}
+	catch(Exception ex){
+		tx.rollback();
+	}
+	finally{
+		session.close();
+		
+	}
+		return fb;
 	}
 	// insert function for the flight booking 
 	@Override
 	public int insertFlightBooking(FlightBooking fb) throws ClassNotFoundException, SQLException, IOException {
-
-		con = DbConnection.dbConnection();
-		int row = 0;
-		// Statement stmt = con.createStatement();
-		//System.out.println("DAOPrint:"+fb);
-		PreparedStatement pst = con.prepareStatement("insert into FLIGHTBOOKING values(?,?,?,?,?)");
-		pst.setString(1, fb.getFlightBookingId());
-		pst.setString(2, fb.getUserId());
-		pst.setString(3, fb.getFlightId());
-		Date d = fb.getFlightBookingDate();
-		java.sql.Date sqlDate1 = new java.sql.Date(d.getTime());
-		pst.setDate(4,sqlDate1 );
-		String status = "false";
-		if (fb.isFlag()) {
-			status = "true";
-			pst.setString(5, status);
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
+		
+		try{
+			tx=session.beginTransaction();
+			session.save(fb);
+			tx.commit();
+			System.out.println("Record Inserted");
+			
+			session.close();
+			return 1;
+			}
+		catch(Exception ex){
+			tx.rollback();
 		}
-
-		row = pst.executeUpdate();
-
-		con.close();
-		return row;
+		session.close();
+		return 0;
 	}
 
 	// delete function for the flight booking
 	@Override
 	public int deleteFlightBooking(String flightBookingId) throws ClassNotFoundException, SQLException, IOException {
-
-		con = DbConnection.dbConnection();
-
-		Statement stmt = con.createStatement();
-		int rows = stmt.executeUpdate("delete from FLIGHTBOOKING where flightBookingId =" + flightBookingId);
-		// Process Results
-
-		con.close();
-		return rows;
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
+		try{
+			tx=session.beginTransaction();
+			FlightBooking flightBooking=(FlightBooking)session.get(FlightBooking.class,flightBookingId);
+			session.delete(flightBooking);
+			tx.commit();
+			session.close();
+			return 1;
+	}
+	catch(Exception ex){
+		tx.rollback();
+		session.close();
+	}
+		return 0;
 	}
 
 	@Override

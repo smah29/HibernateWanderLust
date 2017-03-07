@@ -1,97 +1,137 @@
 package com.mmt.model.dao;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
-import com.mmt.model.bean.Promotion;
+
+
 import com.mmt.model.bean.Wallet;
 
+
 public class WalletDaoImplMMT implements WalletDaoMMT {
-	Connection con = null;
-	// Wallet wl = null;
+	Configuration cfg=new Configuration();
 
 	@Override
 	public Wallet displayWallet(String userId) throws SQLException, ClassNotFoundException, IOException {
-		con = DbConnection.dbConnection();
-		Wallet newWallet = new Wallet();
-
-		ResultSet rs;
-		PreparedStatement pst = con.prepareStatement("select * from wallet where UserId=?");
-		pst.setString(1, userId);
-		rs = pst.executeQuery();
-		if (rs.next()) {
-			newWallet.setUserId(rs.getString(1));
-			newWallet.setWalletBalance(rs.getDouble(2));
-			con.close();
-			return newWallet;
+		
+		
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
+		Wallet wallet=null;
+		try{
+			tx=session.beginTransaction();
+			wallet=(Wallet)session.get(Wallet.class,userId);
+			tx.commit();
 		}
-		con.close();
-		return null;
+	catch(Exception ex){
+		tx.rollback();
+	}
+	finally{
+		session.close();
+		}
+		return wallet;
+		
 	}
 
 	@Override
 	public int updateWallet(String userId, Wallet newWallet) throws SQLException, ClassNotFoundException, IOException {
-		con = DbConnection.dbConnection();
-		int row = 0;
-		PreparedStatement pst = con.prepareStatement("update wallet SET walletBalance=? where userId=?");
-
-		pst.setDouble(1, newWallet.getWalletBalance());
-		pst.setString(2, userId);
-		row = pst.executeUpdate();
-
-		con.close();
-		return row;
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
+		try{
+			tx=session.beginTransaction();
+			Wallet oldWallet=(Wallet)session.get(Wallet.class,userId);
+			session.update(newWallet);
+			tx.commit();
+			session.close();
+			return 1;
+	}
+	catch(Exception ex){
+		tx.rollback();
+		session.close();
+	}
+		return 0;
+		
 	}
 
 	@Override
 	public ArrayList<Wallet> displayWalletAll() throws SQLException, ClassNotFoundException, IOException {
-		Wallet pro = new Wallet();
-		con = DbConnection.dbConnection();
-
+		
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
 		ArrayList<Wallet> proList = new ArrayList<Wallet>();
-
-		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("select * from Wallet ");
-		while (rs.next()) {
-			pro.setUserId(rs.getString(1));
-			pro.setWalletBalance(rs.getDouble(2));
-			proList.add(pro);
+		try{
+			tx=session.beginTransaction();
+			Query query=session.createQuery("from Wallet");
+			List<Wallet> walletList=query.list();
+			
+			for(Wallet wallet:walletList){
+				proList.add(wallet);
+			}
 		}
-		con.close();
+		catch(Exception ex){
+			tx.rollback();
+		}
+		finally{
+			session.close();
+			
+		}
+		
 		return proList;
 	}
 
 	@Override
 	public int insertWallet(Wallet wallet) throws SQLException, ClassNotFoundException, IOException {
-		con = DbConnection.dbConnection();
-		int row = 0;
-
-		PreparedStatement pst = con.prepareStatement("insert into wallet values(?,?)");
-		pst.setString(1, wallet.getUserId());
-		pst.setDouble(2, wallet.getWalletBalance());
-		row = pst.executeUpdate();
-		return row;
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
+		
+		try{
+			tx=session.beginTransaction();
+			session.save(wallet);
+			tx.commit();
+			System.out.println("Record Inserted");
+			
+			session.close();
+			return 1;
+			}
+		catch(Exception ex){
+			tx.rollback();
+		}
+		session.close();
+		return 0;
 	}
 
 	@Override
-	public int deleteWallet(Wallet w) throws SQLException, ClassNotFoundException, IOException {
-		con = DbConnection.dbConnection();
-		String uId = w.getUserId();
-		double userBalance = w.getWalletBalance();
-		Statement stmt = con.createStatement();
-		int rows = stmt.executeUpdate("delete from Wallet where USERID=+" + uId);
-		if (rows > 0) {
-			con.close();
-			return rows;
-		} else {
-			con.close();
-			return 0;
-		}
-
+	public int deleteWallet(Wallet wallet) throws SQLException, ClassNotFoundException, IOException {
+		cfg.configure("hibernate.cfg.xml");
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
+		Transaction tx=null;
+		try{
+			tx=session.beginTransaction();
+			session.delete(wallet);
+			tx.commit();
+			session.close();
+			return 1;
+	}
+	catch(Exception ex){
+		tx.rollback();
+		session.close();
+	}
+		return 0;
 	}
 }
