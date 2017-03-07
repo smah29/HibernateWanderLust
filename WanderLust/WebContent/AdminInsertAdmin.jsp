@@ -26,7 +26,7 @@
 <body>
 <c:set var="option" scope="session" value="${option}"/>
 <c:out value="${option}"></c:out>
-<form action="./AdminProfile">
+<form action="./AdminProfile" name="form1">
 <fieldset>
 <legend>Fill Flight Details</legend><br><br>
 <input type="hidden" name="option" value="insert"/>

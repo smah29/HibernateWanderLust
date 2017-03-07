@@ -4,13 +4,17 @@
 <!-- Generated Mar 6, 2017 8:14:19 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
     <class name="com.mmt.model.bean.HotelRoom" table="HOTELROOM">
-        <id name="hotelId" type="java.lang.String">
+           <id name="hotelId" type="java.lang.String">
             <column name="HOTELID" />
-            <generator class="assigned" />
+           <generator class="foreign">
+				<param name="property">hotel</param> 
+			</generator>
         </id>
-        <property name="hotelRoomNo" type="int">
+        <property  name="hotelRoomNo" type="int">
             <column name="HOTELROOMNO" />
-        </property>
+            
+        </property >
+       
         <property name="hotelRoomType" type="java.lang.String">
             <column name="HOTELROOMTYPE" />
         </property>

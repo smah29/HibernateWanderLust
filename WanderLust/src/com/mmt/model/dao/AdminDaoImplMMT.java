@@ -12,15 +12,14 @@ import com.mmt.model.bean.Admin;
 
 public class AdminDaoImplMMT implements AdminDao{
 	Configuration cfg=new Configuration();
-	SessionFactory factory;
-	Session session;
+	
 	//insert function for the admin board
 	
 	@Override
 	public int insert(Admin admin) throws SQLException, ClassNotFoundException, IOException {
 		cfg.configure("hibernate.cfg.xml");
-		factory=cfg.buildSessionFactory();
-		session=factory.openSession();
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
 		Transaction tx=null;
 		int row=0;
 		try{
@@ -43,8 +42,8 @@ public class AdminDaoImplMMT implements AdminDao{
 	@Override
 	public Admin search(String aid) throws SQLException, ClassNotFoundException, IOException {
 		cfg.configure("hibernate.cfg.xml");
-		factory=cfg.buildSessionFactory();
-		session=factory.openSession();
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
 		Transaction tx=null;
 		Admin admin=null;
 		try{
@@ -64,8 +63,8 @@ public class AdminDaoImplMMT implements AdminDao{
 	@Override
 	public int delete(String aid) throws SQLException, ClassNotFoundException, IOException {
 		cfg.configure("hibernate.cfg.xml");
-		factory=cfg.buildSessionFactory();
-		session=factory.openSession();
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
 		Transaction tx=null;
 		
 		
@@ -89,8 +88,8 @@ public class AdminDaoImplMMT implements AdminDao{
 	@Override
 	public int update(String aid, Admin admin) throws SQLException, ClassNotFoundException, IOException {
 		cfg.configure("hibernate.cfg.xml");
-		factory=cfg.buildSessionFactory();
-		session=factory.openSession();
+		SessionFactory factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
 		Transaction tx=null;
 		try{
 			tx=session.beginTransaction();

@@ -4,10 +4,11 @@
 <!-- Generated Mar 6, 2017 8:14:19 PM by Hibernate Tools 3.5.0.Final -->
 <hibernate-mapping>
     <class name="com.mmt.model.bean.Hotel" table="HOTEL">
+       
         <id name="hotelId" type="java.lang.String">
             <column name="HOTELID" />
             <generator class="assigned" />
-        </id>
+           </id> 
         <property name="hotelName" type="java.lang.String">
             <column name="HOTELNAME" />
         </property>
