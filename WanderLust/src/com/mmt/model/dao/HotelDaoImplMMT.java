@@ -8,51 +8,65 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 //import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
 import com.mmt.model.bean.Hotel;
 import com.mmt.model.bean.HotelRoom;
+import com.mmt.model.bean.Promotion;
 
 
 public class HotelDaoImplMMT implements HotelDaoMMT {
-	Connection con=null;
-	
+	Configuration cfg=new Configuration();
+	SessionFactory factory=cfg.buildSessionFactory();
+	Session session;
+	Transaction tx=null;
 	//insert the hotel detail
 	@Override
 	public int insertHotel(Hotel h) throws SQLException, ClassNotFoundException, IOException {
 		
-		int rows,rows2 = 0;
-		con=DbConnection.dbConnection();
-		PreparedStatement pst=con.prepareStatement("insert into hotel values(?,?,?,?)");
-		pst.setString(1, h.getHotelId());
-		pst.setString(2, h.getHotelName());
-		pst.setString(3, h.getHotelLocation());
-		pst.setString(4, h.getHotelInfo());
-		
-		rows=pst.executeUpdate();
-		//System.out.println(rows);
-		
+		int rows = 0,rows2 = 0;
+		cfg.configure("hibernate.cfg.xml");
+		session=factory.openSession();
+		try{
+			tx=session.beginTransaction();
+			session.save(h);
+			tx.commit();
+			rows=1;
+			System.out.println("Record Inserted");
+			session.close();
+			}
+		catch(Exception ex){
+			tx.rollback();
+		}
+		session.close();
 		ArrayList<HotelRoom> rl=h.getHotelRoom();
-		
-		
 		for(HotelRoom room:rl)
-		{
-			
-			PreparedStatement pst1=con.prepareStatement("insert into hotelroom values(?,?,?,?,?)");
-			pst1.setString(1, room.getHotelChangedId());
-			pst1.setInt(2, room.getHotelRoomNo());
-			pst1.setString(3, room.getHotelRoomType());
-			pst1.setDouble(4, room.getHotelRoomPrice());
-			pst1.setString(5, room.getHotelRoomStatus());
-			 rows2 = pst1.executeUpdate();
-			
+		{			
+		try{
+				session=factory.openSession();
+				tx=session.beginTransaction();
+				session.save(room);
+				tx.commit();
+				rows2=1;
+				session.close();
+			}
+			catch(Exception ex){
+				tx.rollback();
+			}
 		}
 		if(rows>0 && rows2>0)
 		{
-			con.close();
+			
 			return rows;
 		}
 		else 
-		{	con.close();
+		{	
 		return 0;
 		}
 		
@@ -63,89 +77,98 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 	@Override
 	public int deleteHotel(String hotelId) throws  SQLException, ClassNotFoundException, IOException {
 		
-		int rows,rows2;
-		con=DbConnection.dbConnection();
-		PreparedStatement pst=con.prepareStatement("delete from hotel where HOTELID=?");
-		pst.setString(1, hotelId);
-		PreparedStatement pst1=con.prepareStatement("delete from hotelROOM where hotelChangedId=?");
-		pst1.setString(1, hotelId);
-		rows=pst.executeUpdate();
-		rows2=pst1.executeUpdate();
+		int rows=0,rows2=0;
+		cfg.configure("hibernate.cfg.xml");
+		session=factory.openSession();
+		
+		try{
+			tx=session.beginTransaction();
+			Hotel hotel=(Hotel)session.get(Hotel.class,hotelId);
+			session.delete(hotel);
+			tx.commit();
+			session.close();
+			rows=1;
+	}
+	catch(Exception ex){
+		tx.rollback();
+	}
+		session.close();
+		try{
+			session=factory.openSession();
+			tx=session.beginTransaction();
+			Query query=session.createQuery("delete from HotelRoom where hotelChangedId=:id");
+			query.setString("id", hotelId);
+			rows2 = query.executeUpdate();
+			tx.commit();
+			session.close();
+			
+	}
+	catch(Exception ex){
+		tx.rollback();
+		session.close();
+	}
 		if(rows>0 && rows2>0)
 		{
-			con.close();
 			return rows;
 		}
 		else 
 			{
-			con.close();
+			
 			return 0;}
 	}
 	
 	//update function to update hotel detials
 
 	@Override
-	public int updateHotel(String hotelChangedId, Hotel newhotel) throws  SQLException, ClassNotFoundException, IOException {
+	public int updateHotel(String hotelId, Hotel newhotel) throws  SQLException, ClassNotFoundException, IOException {
 		
-//		con=DbConnection.dbConnection();
-//		String hotelId1=newhotel.getHotelId();
-//		String hotelName=newhotel.getHotelName();
-//		String hotelLocation=newhotel.getHotelLocation();
-//		String hotelInfo=newhotel.getHotelInfo();
-//		
-//		//Query
-//		Statement stmt=con.createStatement();
-//		//System.out.println("b4 update");
-//		//System.out.println(newhotel);
-//		int rows=stmt.executeUpdate("update hotel set hotelId= '"+hotelId1+"' ,hotelName ='"+hotelName+"',hotelLocation='"+hotelLocation+"' ,hotelInfo ='"+hotelInfo+"' where hotelId="+hotelId);
-//		 //rows=stmt.executeUpdate("insert into User (address,email,uid,name,pass,phoneNo values ("+address+","+email+","+uid+","+name+","+pass+","+phoneNo+")");
-//		//Process Results
-//		//System.out.println("a4 update");
-//		if(rows>0)
-//		{
-//			con.close();
-//			return rows;
-//		}
-//		else 
-//		{	con.close();
-//		return 0;
-//		}
+		int rows=0,rows2 = 0;
+		cfg.configure("hibernate.cfg.xml");
+		session=factory.openSession();
 		
-		int rows,rows2 = 0;
-		con=DbConnection.dbConnection();
-		PreparedStatement pst=con.prepareStatement("update hotel set hotelId= ? ,hotelName =?,hotelLocation=?,hotelInfo =? where hotelId=?");
-		pst.setString(1, newhotel.getHotelId());
-		pst.setString(2, newhotel.getHotelName());
-		pst.setString(3, newhotel.getHotelLocation());
-		pst.setString(4, newhotel.getHotelInfo());
-		pst.setString(5, hotelChangedId);
-		
-		rows=pst.executeUpdate();
-		//System.out.println(rows);
-		
+		try{
+			tx=session.beginTransaction();
+			Hotel oldHotel=(Hotel)session.get(Hotel.class,hotelId);
+			session.update(newhotel);
+			tx.commit();
+			rows=1;
+			session.close();
+			
+	}
+	catch(Exception ex){
+		tx.rollback();
+	}
+		session.close();
 		ArrayList<HotelRoom> rl=newhotel.getHotelRoom();
 		
 		
 		for(HotelRoom room:rl)
 		{
-			
-			PreparedStatement pst1=con.prepareStatement("update hotelroom set hotelChangedId=?, hotelRoomNo=?, hotelRoomType=?, hotelRoomPrice=?,hotelRoomStatus=? where hotelChangedId=?");
-			pst1.setString(1, room.getHotelChangedId());
-			pst1.setInt(2, room.getHotelRoomNo());
-			pst1.setString(3, room.getHotelRoomType());
-			pst1.setDouble(4, room.getHotelRoomPrice());
-			pst1.setString(5, room.getHotelRoomStatus());
-			pst1.setString(6, hotelChangedId);
-			 rows2 = pst1.executeUpdate();
-			
+			try{
+				session=factory.openSession();
+				tx=session.beginTransaction();
+				Query query = session.createQuery("update hotelroom set hotelChangedId=:id, hotelRoomNo=:num, hotelRoomType=:type, hotelRoomPrice=:price,hotelRoomStatus=:status where hotelChangedId=:hotelId");
+				query.setParameter("id",room.getHotelChangedId());
+				query.setParameter("num",room.getHotelRoomNo());
+				query.setParameter("type",room.getHotelRoomType());
+				query.setParameter("price",room.getHotelRoomPrice());
+				query.setParameter("status",room.getHotelRoomStatus());
+				query.setParameter("hotelId",hotelId);
+				tx.commit();
+				rows2 = query.executeUpdate();
+				session.close();
+			}
+			catch(Exception ex){
+				tx.rollback();
+			}
 		}
 		if(rows>0 && rows2>0)
 		{
-			con.close();
+			
 			return rows;
 		}
 		else 
-		{	con.close();
+		{	
 		return 0;
 		}
 		
@@ -154,142 +177,93 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 	// display function to display hotel list
 	@Override
 	public ArrayList<Hotel> displayHotel() throws  SQLException, ClassNotFoundException, IOException {
-		Hotel hotel;
-		con=DbConnection.dbConnection();
-		//Query
-		ArrayList<Hotel> hotList=new ArrayList<Hotel>();
-		HotelRoom room;
-
-		//Statement stmt=con.createStatement();
-		//ResultSet rs=stmt.executeQuery("select * from Hotel ");
-		//Process Results
-		ResultSet rs;
-		PreparedStatement pst=con.prepareStatement("select * from hotel");
-		rs=pst.executeQuery();
-		while(rs.next()){
-			hotel =new Hotel();
-			hotel.setHotelId(rs.getString("hotelId"));
-			hotel.setHotelName(rs.getString("hotelName"));
-			hotel.setHotelLocation(rs.getString("hotelLocation"));
-			hotel.setHotelInfo(rs.getString("hotelInfo"));
-			ResultSet rs2;
-			PreparedStatement pst1=con.prepareStatement("select * from hotelroom where hotelChangedId=?");
-			pst1.setString(1, rs.getString("hotelChangedId"));
-			//Statement stmt2=con.createStatement();
-			ArrayList<HotelRoom> rl=new ArrayList<HotelRoom>();
-			rs2=pst1.executeQuery();
-			//ResultSet rs2=stmt.executeQuery("select * from  HotelRoom where hotelId= "+rs.getString("hotelId"));
-			while(rs2.next())
-			{
-				room=new HotelRoom(); 
-				room.setHotelRoomNo(rs2.getInt("hotelRoomNo"));
-				room.setHotelRoomType(rs2.getString("hotelRoomType"));
-				room.setHotelRoomPrice(rs2.getDouble("hotelRoomPrice"));
-				room.setHotelRoomStatus(rs2.getString("hotelRoomStatus"));
-				
-				rl.add(room);
+		ArrayList<Hotel> hotList=null;
+		ArrayList<HotelRoom> hotRoomList=null;
+		cfg.configure("hibernate.cfg.xml");
+		session=factory.openSession();
+		tx=session.beginTransaction();
+		try{
+			Query query=session.createQuery("from Hotel");
+			List<Hotel> hotelList=query.list();
+			for(Hotel hotel1:hotelList){
+				String hotelId=hotel1.getHotelId();
+					Query query2=session.createQuery("from HotelRoom where hotelChangedId=:id");
+					query2.setString("id", hotelId);
+					List<HotelRoom> hotelRoomList=query2.list();
+					
+						for(HotelRoom hotelRoom:hotelRoomList){
+							hotRoomList.add(hotelRoom);
+						}
+					hotel1.setHotelRoom(hotRoomList);
+				hotList.add(hotel1);
 			}
-			hotel.setHotelRoom(rl);;
-			
-			hotList.add(hotel);
-			//System.out.println(hotList);
-
+			tx.commit();	
 		}
-		
-		con.close();
+		catch(Exception ex){
+			tx.rollback();
+		}
+		session.close();
 		return hotList;
 	}
 
 	@Override
-	public Hotel searchHotel(String hotelChangedId) throws  SQLException, ClassNotFoundException, IOException {
-		Hotel hotel =null;
-		con=DbConnection.dbConnection();
-		
-		ResultSet rs;
-		PreparedStatement pst=con.prepareStatement("select * from hotel where hotelId=?");
-		pst.setString(1, hotelChangedId);
-		rs=pst.executeQuery();
-		while(rs.next()){
-			hotel =new Hotel();
-			hotel.setHotelId(rs.getString("hotelId"));
-			hotel.setHotelName(rs.getString("hotelName"));
-			hotel.setHotelLocation(rs.getString("hotelLocation"));
-			hotel.setHotelInfo(rs.getString("hotelInfo"));
-			PreparedStatement pst1=con.prepareStatement("select * from hotelroom where hotelChangedId=?");
-			pst1.setString(1, hotelChangedId);
-			HotelRoom room=null;
-			ArrayList<HotelRoom> rl=new ArrayList<HotelRoom>();
-			ResultSet rs2=pst1.executeQuery();
-			//ResultSet rs2=stmt.executeQuery("select * from Hoteloom where hotelId= "+rs.getString("hotelId"));
-			while(rs2.next())
-			{
-				room=new HotelRoom();
-				room.setHotelRoomNo(rs2.getInt("hotelRoomNo"));
-				room.setHotelRoomType(rs2.getString("hotelRoomType"));
-				room.setHotelRoomPrice(rs2.getDouble("hotelRoomPrice"));
-				room.setHotelRoomStatus(rs2.getString("hotelRoomStatus"));
-				rl.add(room);
-			}
-			hotel.setHotelRoom(rl);;
+	public Hotel searchHotel(String hotelId) throws  SQLException, ClassNotFoundException, IOException {
+		ArrayList<HotelRoom> hotRoomList=null;
+		cfg.configure("hibernate.cfg.xml");
+		session=factory.openSession();
+		tx=session.beginTransaction();
+		Hotel hotel=null;
+		try{
+			hotel=(Hotel)session.get(Hotel.class,hotelId);
+				
+					Query query2=session.createQuery("from HotelRoom where hotelChangedId=:id");
+					query2.setString("id", hotelId);
+					List<HotelRoom> hotelRoomList=query2.list();
+						for(HotelRoom hotelRoom:hotelRoomList){
+							hotRoomList.add(hotelRoom);
+						}
+				hotel.setHotelRoom(hotRoomList);	
+				tx.commit();
 			
-			con.close();
-			return hotel;
-
 		}
-		
-		con.close();
-		return null;
+		catch(Exception ex){
+			tx.rollback();
+		}
+		session.close();
+		return hotel;
 	}
 
 
 
 	@Override
 	public ArrayList<Hotel> searchHotel1(String hotelLocation) throws SQLException, ClassNotFoundException, IOException {
-		ArrayList<Hotel> H=new ArrayList<Hotel>();
-		Hotel hotel =null;
-		con=DbConnection.dbConnection();
-		ResultSet rs;
-		PreparedStatement pst=con.prepareStatement("select * from hotel where hotelLocation=?");
-		
-		pst.setString(1, hotelLocation);
-		rs=pst.executeQuery();
-		while(rs.next()){
-			hotel =new Hotel();
-			hotel.setHotelId(rs.getString("hotelId"));
-			hotel.setHotelName(rs.getString("hotelName"));
-			hotel.setHotelLocation(rs.getString("hotelLocation"));
-			hotel.setHotelInfo(rs.getString("hotelInfo"));
-			hotel.setHotelImage(rs.getString("hotelImage"));
-			PreparedStatement pst1=con.prepareStatement("select * from hotelroom where hotelChangedId=?");
-			
-			pst1.setString(1, (rs.getString("hotelChangedId")));
-			ResultSet rs2=pst1.executeQuery();
-
-			HotelRoom room=null;
-			ArrayList<HotelRoom> rl=new ArrayList<HotelRoom>();
-			//ResultSet rs2=stmt.executeQuery("select * from Hoteloom where hotelId= "+rs.getString("hotelId"));
-			while(rs2.next())
-			{
-				room=new HotelRoom();
-				room.setHotelRoomNo(rs2.getInt("hotelRoomNo"));
-				room.setHotelRoomType(rs2.getString("hotelRoomType"));
-				room.setHotelRoomPrice(rs2.getDouble("hotelRoomPrice"));
-				room.setHotelRoomStatus(rs2.getString("hotelRoomStatus"));
-				rl.add(room);
+		ArrayList<Hotel> hotList=null;
+		ArrayList<HotelRoom> hotRoomList=null;
+		cfg.configure("hibernate.cfg.xml");
+		session=factory.openSession();
+		tx=session.beginTransaction();
+		try{
+			Query query=session.createQuery("from Hotel where hotelLocation=:place");
+			query.setString("place", hotelLocation);
+			List<Hotel> hotelList=query.list();
+			for(Hotel hotel1:hotelList){
+				String hotelId=hotel1.getHotelId();
+					Query query2=session.createQuery("from HotelRoom where hotelChangedId=:id");
+					query2.setString("id", hotelId);
+					List<HotelRoom> hotelRoomList=query2.list();
+					
+						for(HotelRoom hotelRoom:hotelRoomList){
+							hotRoomList.add(hotelRoom);
+						}
+					hotel1.setHotelRoom(hotRoomList);
+				hotList.add(hotel1);
 			}
-			hotel.setHotelRoom(rl);;
-			
-			
-			H.add(hotel);
-
+			tx.commit();	
 		}
-		
-		
-		return H;
+		catch(Exception ex){
+			tx.rollback();
+		}
+		session.close();
+		return hotList;
 	}
-
-
-
-	
-
 }

@@ -98,6 +98,7 @@ public class PromotionDaoImplMMT implements PromotionDaoMMT {
 			for(Promotion promotion:promotionList){
 				proList.add(promotion);
 			}
+			tx.commit();
 		}
 		catch(Exception ex){
 			tx.rollback();
