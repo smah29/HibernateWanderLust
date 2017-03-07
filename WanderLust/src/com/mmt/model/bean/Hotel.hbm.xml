@@ -23,7 +23,8 @@
         </property>
         <list name="hotelRoom" inverse="false" table="HOTELROOM" lazy="true">
             <key>
-                <column name="HOTELID" />
+                <column name="HOTELCHANGEDID" />
+               
             </key>
             <list-index></list-index>
             <one-to-many class="com.mmt.model.bean.HotelRoom" />
