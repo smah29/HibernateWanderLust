@@ -30,7 +30,7 @@ public class UserDaoImplMMT implements UserDaoMMT {
 			}
 		catch(Exception ex){
 			tx.rollback();
-		}
+			}
 		session.close();
 		return 0;
 	}
