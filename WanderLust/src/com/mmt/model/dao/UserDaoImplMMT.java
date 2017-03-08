@@ -13,20 +13,18 @@ import com.mmt.model.bean.User;
 
 
 public class UserDaoImplMMT implements UserDaoMMT {
-	Configuration cfg=new Configuration();
+
+	SessionFactory factory=new Configuration().configure().buildSessionFactory();
+	Session session=factory.openSession();
+	Transaction tx=null;
 	@Override
 	public int insert(User user) throws SQLException, ClassNotFoundException, IOException {
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
-		Session session=factory.openSession();
-		Transaction tx=null;
 		
 		try{
 			tx=session.beginTransaction();
 			session.save(user);
 			tx.commit();
 			System.out.println("Record Inserted");
-			
 			session.close();
 			return 1;
 			}
@@ -40,10 +38,10 @@ public class UserDaoImplMMT implements UserDaoMMT {
 	@Override
 	public User search(String uid) throws SQLException, ClassNotFoundException, IOException {
 		
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
-		Session session=factory.openSession();
-		Transaction tx=null;
+		//cfg.configure("hibernate.cfg.xml");
+		//SessionFactory factory=cfg.buildSessionFactory();
+		//Session session=factory.openSession();
+		//Transaction tx=null;
 		User user=null;
 		try{
 			tx=session.beginTransaction();
@@ -61,10 +59,10 @@ public class UserDaoImplMMT implements UserDaoMMT {
 
 	@Override
 	public int delete(String uid) throws SQLException, ClassNotFoundException, IOException {
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
-		Session session=factory.openSession();
-		Transaction tx=null;
+		//cfg.configure("hibernate.cfg.xml");
+		//SessionFactory factory=cfg.buildSessionFactory();
+		//Session session=factory.openSession();
+		//Transaction tx=null;
 		try{
 			tx=session.beginTransaction();
 			User user=(User)session.get(User.class,uid);
@@ -83,13 +81,13 @@ public class UserDaoImplMMT implements UserDaoMMT {
 
 	@Override
 	public int update(String uid, User user) throws SQLException, ClassNotFoundException, IOException {
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
-		Session session=factory.openSession();
-		Transaction tx=null;
+		//cfg.configure("hibernate.cfg.xml");
+		//SessionFactory factory=cfg.buildSessionFactory();
+		//Session session=factory.openSession();
+	//	Transaction tx=null;
 		try{
 			tx=session.beginTransaction();
-			User oldUser=(User)session.get(User.class,uid);
+			//User oldUser=(User)session.get(User.class,uid);
 			session.update(user);
 			tx.commit();
 			session.close();
@@ -104,10 +102,10 @@ public class UserDaoImplMMT implements UserDaoMMT {
 
 	@Override
 	public List<User> displayAll() throws SQLException, ClassNotFoundException, IOException {
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
-		Session session=factory.openSession();
-		Transaction tx=null;
+		//cfg.configure("hibernate.cfg.xml");
+		//SessionFactory factory=cfg.buildSessionFactory();
+		//Session session=factory.openSession();
+	//	Transaction tx=null;
 		List<User> userList=null;
 		try{
 			tx=session.beginTransaction();

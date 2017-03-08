@@ -9,8 +9,7 @@ public class User {
 	private String userPassword;
 
 	public User() {
-		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public User(String userId, String userName, long userPhoneNo, String userEmailId, String userAddress,

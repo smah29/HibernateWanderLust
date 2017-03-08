@@ -21,13 +21,13 @@
         <property name="hotelImage" type="java.lang.String">
             <column name="HOTELIMAGE" />
         </property>
-        <list name="hotelRoom" inverse="false" table="HOTELROOM" lazy="true">
+        <!--  <list name="hotelRoom" inverse="false" table="HOTELROOM" lazy="true">
             <key>
                 <column name="HOTELCHANGEDID" />
                
             </key>
             <list-index></list-index>
             <one-to-many class="com.mmt.model.bean.HotelRoom" />
-        </list>
+        </list>-->
     </class>
 </hibernate-mapping>
