@@ -13,7 +13,7 @@ import com.mmt.model.bean.Hotel;
 import com.mmt.model.bean.HotelRoom;
 public class HotelDaoImplMMT implements HotelDaoMMT {
 	Configuration cfg=new Configuration();
-	SessionFactory factory=cfg.buildSessionFactory();
+	SessionFactory factory;
 	Session session;
 	Transaction tx=null;
 	//insert the hotel detail
@@ -22,6 +22,7 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 		
 		int rows = 0,rows2 = 0;
 		cfg.configure("hibernate.cfg.xml");
+		factory=cfg.buildSessionFactory();
 		session=factory.openSession();
 		try{
 			tx=session.beginTransaction();
@@ -69,6 +70,7 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 		
 		int rows=0,rows2=0;
 		cfg.configure("hibernate.cfg.xml");
+		factory=cfg.buildSessionFactory();
 		session=factory.openSession();
 		
 		try{
@@ -114,6 +116,7 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 		
 		int rows=0,rows2 = 0;
 		cfg.configure("hibernate.cfg.xml");
+		factory=cfg.buildSessionFactory();
 		session=factory.openSession();
 		
 		try{
@@ -170,6 +173,7 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 		ArrayList<Hotel> hotList=null;
 		ArrayList<HotelRoom> hotRoomList=null;
 		cfg.configure("hibernate.cfg.xml");
+		factory=cfg.buildSessionFactory();
 		session=factory.openSession();
 		tx=session.beginTransaction();
 		try{
@@ -200,6 +204,7 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 	public Hotel searchHotel(String hotelId) throws  SQLException, ClassNotFoundException, IOException {
 		ArrayList<HotelRoom> hotRoomList=null;
 		cfg.configure("hibernate.cfg.xml");
+		factory=cfg.buildSessionFactory();
 		session=factory.openSession();
 		tx=session.beginTransaction();
 		Hotel hotel=null;
@@ -230,6 +235,7 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 		ArrayList<Hotel> hotList=null;
 		ArrayList<HotelRoom> hotRoomList=null;
 		cfg.configure("hibernate.cfg.xml");
+		factory=cfg.buildSessionFactory();
 		session=factory.openSession();
 		tx=session.beginTransaction();
 		try{
