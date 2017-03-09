@@ -12,18 +12,17 @@ import org.hibernate.cfg.Configuration;
 import com.mmt.model.bean.Hotel;
 import com.mmt.model.bean.HotelRoom;
 public class HotelDaoImplMMT implements HotelDaoMMT {
-	Configuration cfg=new Configuration();
-	SessionFactory factory;
-	Session session;
+	SessionFactory factory=new Configuration().configure().buildSessionFactory();
+	//Session session=factory.openSession();
 	Transaction tx=null;
 	//insert the hotel detail
 	@Override
 	public int insertHotel(Hotel h) throws SQLException, ClassNotFoundException, IOException {
 		
 		int rows = 0,rows2 = 0;
-		cfg.configure("hibernate.cfg.xml");
-		factory=cfg.buildSessionFactory();
-		session=factory.openSession();
+		//cfg.configure("hibernate.cfg.xml");
+		//factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
 		try{
 			tx=session.beginTransaction();
 			session.save(h);
@@ -70,9 +69,9 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 	public int deleteHotel(String hotelId) throws  SQLException, ClassNotFoundException, IOException {
 		
 		int rows=0,rows2=0;
-		cfg.configure("hibernate.cfg.xml");
-		factory=cfg.buildSessionFactory();
-		session=factory.openSession();
+		//cfg.configure("hibernate.cfg.xml");
+		//factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
 		
 		try{
 			tx=session.beginTransaction();
@@ -117,9 +116,9 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 	public int updateHotel(String hotelId, Hotel newhotel) throws  SQLException, ClassNotFoundException, IOException {
 		
 		int rows=0,rows2 = 0;
-		cfg.configure("hibernate.cfg.xml");
-		factory=cfg.buildSessionFactory();
-		session=factory.openSession();
+		//cfg.configure("hibernate.cfg.xml");
+		//factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
 		
 		try{
 			tx=session.beginTransaction();
@@ -175,9 +174,9 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 	public ArrayList<Hotel> displayHotel() throws  SQLException, ClassNotFoundException, IOException {
 		ArrayList<Hotel> hotList=null;
 		ArrayList<HotelRoom> hotRoomList=null;
-		cfg.configure("hibernate.cfg.xml");
-		factory=cfg.buildSessionFactory();
-		session=factory.openSession();
+		//cfg.configure("hibernate.cfg.xml");
+		//factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
 		tx=session.beginTransaction();
 		try{
 			Query query=session.createQuery("from Hotel");
@@ -206,9 +205,9 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 	@Override
 	public Hotel searchHotel(String hotelId) throws  SQLException, ClassNotFoundException, IOException {
 		ArrayList<HotelRoom> hotRoomList=null;
-		cfg.configure("hibernate.cfg.xml");
-		factory=cfg.buildSessionFactory();
-		session=factory.openSession();
+		//cfg.configure("hibernate.cfg.xml");
+		//factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
 		tx=session.beginTransaction();
 		Hotel hotel=null;
 		try{
@@ -237,9 +236,9 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 	public ArrayList<Hotel> searchHotel1(String hotelLocation) throws SQLException, ClassNotFoundException, IOException {
 		ArrayList<Hotel> hotList=null;
 		ArrayList<HotelRoom> hotRoomList=null;
-		cfg.configure("hibernate.cfg.xml");
-		factory=cfg.buildSessionFactory();
-		session=factory.openSession();
+		//cfg.configure("hibernate.cfg.xml");
+		//factory=cfg.buildSessionFactory();
+		Session session=factory.openSession();
 		tx=session.beginTransaction();
 		try{
 			Query query=session.createQuery("from Hotel where hotelLocation=:place");

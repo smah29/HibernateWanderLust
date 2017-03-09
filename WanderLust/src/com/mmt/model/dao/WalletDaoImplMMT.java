@@ -17,7 +17,7 @@ import com.mmt.model.bean.Wallet;
 
 public class WalletDaoImplMMT implements WalletDaoMMT {
 	SessionFactory factory=new Configuration().configure().buildSessionFactory();
-	Session session=factory.openSession();
+	//Session session=factory.openSession();
 	Transaction tx=null;
 	@Override
 	public Wallet displayWallet(String userId) throws SQLException, ClassNotFoundException, IOException {
@@ -25,7 +25,7 @@ public class WalletDaoImplMMT implements WalletDaoMMT {
 		
 		//cfg.configure("hibernate.cfg.xml");
 		//factory=cfg.buildSessionFactory();
-		//session=factory.openSession();
+		Session session=factory.openSession();
 		
 		Wallet wallet=null;
 		try{
@@ -47,7 +47,7 @@ public class WalletDaoImplMMT implements WalletDaoMMT {
 	public int updateWallet(String userId, Wallet newWallet) throws SQLException, ClassNotFoundException, IOException {
 //		cfg.configure("hibernate.cfg.xml");
 //		factory=cfg.buildSessionFactory();
-//		session=factory.openSession();
+		Session session=factory.openSession();
 		//Transaction tx=null;
 		int rows=0;
 		try{
@@ -72,7 +72,7 @@ public class WalletDaoImplMMT implements WalletDaoMMT {
 		
 //		cfg.configure("hibernate.cfg.xml");
 //		factory=cfg.buildSessionFactory();
-//		session=factory.openSession();
+		Session session=factory.openSession();
 		//Transaction tx=null;
 		ArrayList<Wallet> proList = new ArrayList<Wallet>();
 		try{
@@ -99,7 +99,7 @@ public class WalletDaoImplMMT implements WalletDaoMMT {
 	public int insertWallet(Wallet wallet) throws SQLException, ClassNotFoundException, IOException {
 //		cfg.configure("hibernate.cfg.xml");
 //		factory=cfg.buildSessionFactory();
-//		session=factory.openSession();
+		Session session=factory.openSession();
 		//Transaction tx=null;
 		int rows=0;
 		try{
@@ -122,7 +122,7 @@ public class WalletDaoImplMMT implements WalletDaoMMT {
 	public int deleteWallet(Wallet wallet) throws SQLException, ClassNotFoundException, IOException {
 //		cfg.configure("hibernate.cfg.xml");
 //		factory=cfg.buildSessionFactory();
-//		session=factory.openSession();
+		Session session=factory.openSession();
 		//Transaction tx=null;
 		int rows=0;
 		try{

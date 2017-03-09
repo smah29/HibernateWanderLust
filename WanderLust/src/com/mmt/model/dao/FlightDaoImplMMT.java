@@ -11,16 +11,17 @@ import org.hibernate.cfg.Configuration;
 import com.mmt.model.bean.Flight;
 
 public class FlightDaoImplMMT implements FlightDaoMMT {
-	Configuration cfg=new Configuration();
-	
+	SessionFactory factory=new Configuration().configure().buildSessionFactory();
+	//Session session=factory.openSession();
+	Transaction tx=null;
 	//insert function for the flight details
 	@Override
 	public int insertFlight(Flight flight) throws ClassNotFoundException, SQLException, IOException {	
 		
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
+		//cfg.configure("hibernate.cfg.xml");
+		//SessionFactory factory=cfg.buildSessionFactory();
 		Session session=factory.openSession();
-		Transaction tx=null;
+		//Transaction tx=null;
 		int rows=0;
 		try{
 			tx=session.beginTransaction();
@@ -41,10 +42,10 @@ public class FlightDaoImplMMT implements FlightDaoMMT {
 		//delete function to delete flight
 	@Override
 	public int deleteFlight(String flightId) throws ClassNotFoundException, SQLException, IOException {
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
+		//cfg.configure("hibernate.cfg.xml");
+		//SessionFactory factory=cfg.buildSessionFactory();
 		Session session=factory.openSession();
-		Transaction tx=null;
+		//Transaction tx=null;
 		int rows=0;
 		try{
 			tx=session.beginTransaction();
@@ -65,10 +66,10 @@ public class FlightDaoImplMMT implements FlightDaoMMT {
 	//function to update flight
 	@Override
 	public int updateFlight(String flightId, Flight newflight) throws ClassNotFoundException, SQLException, IOException {
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
+//		cfg.configure("hibernate.cfg.xml");
+//		SessionFactory factory=cfg.buildSessionFactory();
 		Session session=factory.openSession();
-		Transaction tx=null;
+//		Transaction tx=null;
 		int rows=0;
 		try{
 			tx=session.beginTransaction();
@@ -90,10 +91,10 @@ public class FlightDaoImplMMT implements FlightDaoMMT {
 		//search function to search flight
 	@Override
 	public Flight searchFlight(String flightId) throws ClassNotFoundException, SQLException, IOException {
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
+//		cfg.configure("hibernate.cfg.xml");
+//		SessionFactory factory=cfg.buildSessionFactory();
 		Session session=factory.openSession();
-		Transaction tx=null;
+//		Transaction tx=null;
 		Flight flight=null;
 		try{
 			tx=session.beginTransaction();
@@ -114,10 +115,10 @@ public class FlightDaoImplMMT implements FlightDaoMMT {
 	@Override
 	public ArrayList<Flight> displayFlight() throws ClassNotFoundException, SQLException, IOException {
 		
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
+//		cfg.configure("hibernate.cfg.xml");
+//		SessionFactory factory=cfg.buildSessionFactory();
 		Session session=factory.openSession();
-		Transaction tx=null;
+//		Transaction tx=null;
 		ArrayList<Flight> F =new ArrayList<Flight>();
 		try{
 			tx=session.beginTransaction();
@@ -144,8 +145,8 @@ public class FlightDaoImplMMT implements FlightDaoMMT {
 			throws ClassNotFoundException, SQLException, IOException {
 		
 		
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
+//		cfg.configure("hibernate.cfg.xml");
+//		SessionFactory factory=cfg.buildSessionFactory();
 		Session session=factory.openSession();
 		Transaction tx=null;
 		
