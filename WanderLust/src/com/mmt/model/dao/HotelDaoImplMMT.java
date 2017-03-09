@@ -30,27 +30,28 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 			tx.commit();
 			rows=1;
 			System.out.println("Record Inserted");
-			session.close();
+			//session.close();
 			}
 		catch(Exception ex){
 			tx.rollback();
 		}
-		session.close();
+		//session.close();
 		ArrayList<HotelRoom> rl=h.getHotelRoom();
 		for(HotelRoom room:rl)
 		{			
 		try{
-				session=factory.openSession();
-				tx=session.beginTransaction();
+				//session=factory.openSession();
+				//tx=session.beginTransaction();
 				session.save(room);
 				tx.commit();
 				rows2=1;
-				session.close();
+				//session.close();
 			}
 			catch(Exception ex){
 				tx.rollback();
 			}
 		}
+		session.close();
 		if(rows>0 && rows2>0)
 		{
 			
@@ -78,27 +79,28 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 			Hotel hotel=(Hotel)session.get(Hotel.class,hotelId);
 			session.delete(hotel);
 			tx.commit();
-			session.close();
+			//session.close();
 			rows=1;
 	}
 	catch(Exception ex){
 		tx.rollback();
 	}
-		session.close();
+		//session.close();
 		try{
-			session=factory.openSession();
-			tx=session.beginTransaction();
+			//session=factory.openSession();
+			//tx=session.beginTransaction();
 			Query query=session.createQuery("delete from HotelRoom where hotelChangedId=:id");
 			query.setString("id", hotelId);
 			rows2 = query.executeUpdate();
 			tx.commit();
-			session.close();
+			//session.close();
 			
 	}
 	catch(Exception ex){
 		tx.rollback();
-		session.close();
+		//session.close();
 	}
+		session.close();
 		if(rows>0 && rows2>0)
 		{
 			return rows;
@@ -121,25 +123,25 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 		
 		try{
 			tx=session.beginTransaction();
-			Hotel oldHotel=(Hotel)session.get(Hotel.class,hotelId);
+			//Hotel oldHotel=(Hotel)session.get(Hotel.class,hotelId);
 			session.update(newhotel);
 			tx.commit();
 			rows=1;
-			session.close();
+			//session.close();
 			
 	}
 	catch(Exception ex){
 		tx.rollback();
 	}
-		session.close();
+		//session.close();
 		ArrayList<HotelRoom> rl=newhotel.getHotelRoom();
 		
 		
 		for(HotelRoom room:rl)
 		{
 			try{
-				session=factory.openSession();
-				tx=session.beginTransaction();
+				//session=factory.openSession();
+				//tx=session.beginTransaction();
 				Query query = session.createQuery("update hotelroom set hotelChangedId=:id, hotelRoomNo=:num, hotelRoomType=:type, hotelRoomPrice=:price,hotelRoomStatus=:status where hotelChangedId=:hotelId");
 				query.setParameter("id",room.getHotelChangedId());
 				query.setParameter("num",room.getHotelRoomNo());
@@ -149,12 +151,13 @@ public class HotelDaoImplMMT implements HotelDaoMMT {
 				query.setParameter("hotelId",hotelId);
 				tx.commit();
 				rows2 = query.executeUpdate();
-				session.close();
+				//session.close();
 			}
 			catch(Exception ex){
 				tx.rollback();
 			}
 		}
+		session.close();
 		if(rows>0 && rows2>0)
 		{
 			

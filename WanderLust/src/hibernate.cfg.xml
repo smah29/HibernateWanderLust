@@ -26,15 +26,15 @@
         <property name="hbm2ddl.auto">update</property>
 
        
-		<!-- <mapping resource="com/mmt/model/bean/Flight.hbm.xml"/>
+		<mapping resource="com/mmt/model/bean/Flight.hbm.xml"/>
 		<mapping resource="com/mmt/model/bean/FlightBooking.hbm.xml"/>
 		<mapping resource="com/mmt/model/bean/Hotel.hbm.xml"/>
 		<mapping resource="com/mmt/model/bean/HotelBooking.hbm.xml"/>
 		<mapping resource="com/mmt/model/bean/HotelRoom.hbm.xml"/>
-		<mapping resource="com/mmt/model/bean/Promotion.hbm.xml"/> -->
+		<mapping resource="com/mmt/model/bean/Promotion.hbm.xml"/> 
 		<mapping resource="com/mmt/model/bean/User.hbm.xml"/>
-	<!--	<mapping resource="com/mmt/model/bean/Wallet.hbm.xml"/>
-		 <mapping resource="com/mmt/model/bean/Admin.hbm.xml"/>-->
+		<mapping resource="com/mmt/model/bean/Wallet.hbm.xml"/>
+		 <mapping resource="com/mmt/model/bean/Admin.hbm.xml"/>
     </session-factory>
 
 </hibernate-configuration>

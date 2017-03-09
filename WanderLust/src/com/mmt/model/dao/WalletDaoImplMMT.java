@@ -16,16 +16,17 @@ import com.mmt.model.bean.Wallet;
 
 
 public class WalletDaoImplMMT implements WalletDaoMMT {
-	Configuration cfg=new Configuration();
-
+	SessionFactory factory=new Configuration().configure().buildSessionFactory();
+	Session session=factory.openSession();
+	Transaction tx=null;
 	@Override
 	public Wallet displayWallet(String userId) throws SQLException, ClassNotFoundException, IOException {
 		
 		
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
-		Session session=factory.openSession();
-		Transaction tx=null;
+		//cfg.configure("hibernate.cfg.xml");
+		//factory=cfg.buildSessionFactory();
+		//session=factory.openSession();
+		
 		Wallet wallet=null;
 		try{
 			tx=session.beginTransaction();
@@ -44,33 +45,35 @@ public class WalletDaoImplMMT implements WalletDaoMMT {
 
 	@Override
 	public int updateWallet(String userId, Wallet newWallet) throws SQLException, ClassNotFoundException, IOException {
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
-		Session session=factory.openSession();
-		Transaction tx=null;
+//		cfg.configure("hibernate.cfg.xml");
+//		factory=cfg.buildSessionFactory();
+//		session=factory.openSession();
+		//Transaction tx=null;
+		int rows=0;
 		try{
 			tx=session.beginTransaction();
 			Wallet oldWallet=(Wallet)session.get(Wallet.class,userId);
 			session.update(newWallet);
 			tx.commit();
-			session.close();
-			return 1;
+			//session.close();
+			rows=1;
 	}
 	catch(Exception ex){
 		tx.rollback();
-		session.close();
+		
 	}
-		return 0;
+		session.close();
+		return rows;
 		
 	}
 
 	@Override
 	public ArrayList<Wallet> displayWalletAll() throws SQLException, ClassNotFoundException, IOException {
 		
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
-		Session session=factory.openSession();
-		Transaction tx=null;
+//		cfg.configure("hibernate.cfg.xml");
+//		factory=cfg.buildSessionFactory();
+//		session=factory.openSession();
+		//Transaction tx=null;
 		ArrayList<Wallet> proList = new ArrayList<Wallet>();
 		try{
 			tx=session.beginTransaction();
@@ -94,44 +97,46 @@ public class WalletDaoImplMMT implements WalletDaoMMT {
 
 	@Override
 	public int insertWallet(Wallet wallet) throws SQLException, ClassNotFoundException, IOException {
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
-		Session session=factory.openSession();
-		Transaction tx=null;
-		
+//		cfg.configure("hibernate.cfg.xml");
+//		factory=cfg.buildSessionFactory();
+//		session=factory.openSession();
+		//Transaction tx=null;
+		int rows=0;
 		try{
 			tx=session.beginTransaction();
 			session.save(wallet);
 			tx.commit();
 			System.out.println("Record Inserted");
 			
-			session.close();
-			return 1;
+			//session.close();
+			rows=1;
 			}
 		catch(Exception ex){
 			tx.rollback();
 		}
 		session.close();
-		return 0;
+		return rows;
 	}
 
 	@Override
 	public int deleteWallet(Wallet wallet) throws SQLException, ClassNotFoundException, IOException {
-		cfg.configure("hibernate.cfg.xml");
-		SessionFactory factory=cfg.buildSessionFactory();
-		Session session=factory.openSession();
-		Transaction tx=null;
+//		cfg.configure("hibernate.cfg.xml");
+//		factory=cfg.buildSessionFactory();
+//		session=factory.openSession();
+		//Transaction tx=null;
+		int rows=0;
 		try{
 			tx=session.beginTransaction();
 			session.delete(wallet);
 			tx.commit();
-			session.close();
-			return 1;
+			//session.close();
+			rows=1;
 	}
 	catch(Exception ex){
 		tx.rollback();
-		session.close();
+		
 	}
-		return 0;
+		session.close();
+		return rows;
 	}
 }

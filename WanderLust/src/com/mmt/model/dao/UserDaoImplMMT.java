@@ -19,20 +19,20 @@ public class UserDaoImplMMT implements UserDaoMMT {
 	Transaction tx=null;
 	@Override
 	public int insert(User user) throws SQLException, ClassNotFoundException, IOException {
-		
+		int rows=0;
 		try{
 			tx=session.beginTransaction();
 			session.save(user);
 			tx.commit();
 			System.out.println("Record Inserted");
-			session.close();
-			return 1;
+			//session.close();
+			rows=1;
 			}
 		catch(Exception ex){
 			tx.rollback();
 			}
 		session.close();
-		return 0;
+		return rows;
 	}
 
 	@Override
@@ -63,19 +63,21 @@ public class UserDaoImplMMT implements UserDaoMMT {
 		//SessionFactory factory=cfg.buildSessionFactory();
 		//Session session=factory.openSession();
 		//Transaction tx=null;
+		int rows=0;
 		try{
 			tx=session.beginTransaction();
 			User user=(User)session.get(User.class,uid);
 			session.delete(user);
 			tx.commit();
-			session.close();
-			return 1;
+			//session.close();
+			rows=1;
 	}
 	catch(Exception ex){
 		tx.rollback();
-		session.close();
+		
 	}
-		return 0;
+		session.close();
+		return rows;
 	}
 	
 
@@ -85,19 +87,21 @@ public class UserDaoImplMMT implements UserDaoMMT {
 		//SessionFactory factory=cfg.buildSessionFactory();
 		//Session session=factory.openSession();
 	//	Transaction tx=null;
+		int rows=0;
 		try{
 			tx=session.beginTransaction();
 			//User oldUser=(User)session.get(User.class,uid);
 			session.update(user);
 			tx.commit();
-			session.close();
-			return 1;
+			//session.close();
+			rows=1;
 	}
 	catch(Exception ex){
 		tx.rollback();
-		session.close();
+		
 	}
-		return 0;
+		session.close();
+		return rows;
 	}
 
 	@Override

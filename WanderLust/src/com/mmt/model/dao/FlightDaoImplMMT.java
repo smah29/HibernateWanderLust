@@ -21,21 +21,21 @@ public class FlightDaoImplMMT implements FlightDaoMMT {
 		SessionFactory factory=cfg.buildSessionFactory();
 		Session session=factory.openSession();
 		Transaction tx=null;
-		
+		int rows=0;
 		try{
 			tx=session.beginTransaction();
 			session.save(flight);
 			tx.commit();
 			System.out.println("Record Inserted");
 			
-			session.close();
-			return 1;
+			//session.close();
+			rows=1;
 			}
 		catch(Exception ex){
 			tx.rollback();
 		}
 		session.close();
-		return 0;
+		return rows;
 	}
 
 		//delete function to delete flight
@@ -45,19 +45,21 @@ public class FlightDaoImplMMT implements FlightDaoMMT {
 		SessionFactory factory=cfg.buildSessionFactory();
 		Session session=factory.openSession();
 		Transaction tx=null;
+		int rows=0;
 		try{
 			tx=session.beginTransaction();
 			Flight flight=(Flight)session.get(Flight.class,flightId);
 			session.delete(flight);
 			tx.commit();
-			session.close();
-			return 1;
+			//session.close();
+			rows=1;;
 	}
 	catch(Exception ex){
 		tx.rollback();
-		session.close();
+		
 	}
-		return 0;
+		session.close();
+		return rows;
 	}
 
 	//function to update flight
@@ -67,19 +69,21 @@ public class FlightDaoImplMMT implements FlightDaoMMT {
 		SessionFactory factory=cfg.buildSessionFactory();
 		Session session=factory.openSession();
 		Transaction tx=null;
+		int rows=0;
 		try{
 			tx=session.beginTransaction();
-			Flight oldFlight=(Flight)session.get(Flight.class,flightId);
+			//Flight oldFlight=(Flight)session.get(Flight.class,flightId);
 			session.update(newflight);
 			tx.commit();
 			session.close();
-			return 1;
+			rows=1;
 	}
 	catch(Exception ex){
 		tx.rollback();
-		session.close();
+		
 	}
-		return 0;
+		session.close();
+		return rows;
 	}
 
 	
